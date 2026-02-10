@@ -1,0 +1,17 @@
+Race conditions: Como as threads compartilham a mesma memoria, por vezes precisamos de Mutexes (Mutual Exclusion):
+Uma thread "tranca" a variável, faz a altereção, e então "destranca". Tal conceito não será necessário nesse projeto.
+
+AF_INET = Address Family Internet. Define a familia de enderecos que sera usado. O sistema de sockets foi criado para aceitar
+varios tipos de rede, este especificamente sera IPv4.
+SOCK_STREAM é o fluxo continuo de bytes, protocolo TCP e nao UDP
+sockaddr_in é a estrutura onde se escreve a porta e o endereco de destino
+
+struct sockaddr_in {
+    short           sin_family;        // IPv4
+    unsigned        short sin_port;    // A porta (8080) precisa usar htons()
+    struct in_addr  sin_addr;          // O endereco IP (ex: INADDR_ANY para qualquer um)
+    char            sin_zero[8];       // Preenchimento que mantem o tamanho padrao
+}
+
+quando a funcao bind() é chamada, ela espera uma struct sockaddr generica. Usamos sockaddr_in especifica para Internet
+e depois fazemos um casting no momento da chamada.
