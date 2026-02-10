@@ -1,0 +1,15 @@
+O IPv4 (Internet Protocol Version 4) tem o formato de 32 bits (4 bytes), como 192.168.1.1. 
+Usamos a constante AF_INET e a struct sockaddr_in. Devido a sua limitação existencial
+(apenas ~4bi de endereços), foi criado o IPv6 que tem 128 bits (16 bytes) representando um 
+hexadecimal= (ex: 2001:0db8:85a3:0000:0000:8a2e:0370:7334). Este tem a constante AF_INET6
+e a struct sockaddr_in6. Também elimina a necessidade de NAT (Network Address Translation).
+
+Estruturas genéricas como struct sockaddr_storage, comportam tanto IPv4 quanto IPv6, mas nao serao 
+usadas nesse projeto. Os IPs são conceitos da camada 3 (rede). O Codigo (camada 7 aplicacao) entrega os dados para 
+o socket (camada 5 sessao), que pede ao TCP (camada 4 transporte) para empacotar tudo, e o TCP coloca 
+a etiqueta de endereco IP (camada 3 rede).
+
+Endianness: Em geral, os processadores sao Little-Endian (ou seja, guardam o byte menos significativo
+primeiro). Mas a rede, por padrao, é Big-Endian (o byte mais significativo primeiro).
+Por isso que usamos funções como htons(Host TO Network Short). Se nao usar isso, o servidor vai tentar
+ouvir a requisicao em uma porta completamente diferente porque os bytes estarao invertidos
