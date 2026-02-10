@@ -22,7 +22,10 @@ Caminho (path): /index.html é aqui que o código C decide qual arquivo abrir no
 Versão: HTTP/1.1 é o padrão mais simple para implementar manualmente.
 Headers: Chave-valor que dao o contexto (quem é o cliente, que tipo de arquivo ele aceita)
 Linha em branco: o delimitador crucial. O HTTP usa \r\n\r\n (CRLF duplo) para dizer: "acabaram
-os cabeçalhos, o que vier depois é o corpo(body)".
+os cabeçalhos, o que vier depois é o corpo(body)". 
+
+O parser é o tradutor do programa. Quando recebe dados do socket, o C recebe um array de caracteres bruto.
+O codigo precisa separar essa string e identificar as instrucoes. Isso é parsear a string.
 
 A resposta (o que será enviado no write()) se dá pelo que ele entendeu da grande string recebida 
 anteriormente. Se a leitura não funcionar teremos um erro de conexao interormpida.
@@ -41,9 +44,38 @@ Content-Lenght: o tamanho exato (em bytes) do corpo. Dica: usar strlen() no
 buffer do HTML para preencher isso.
 Corpo: conteudo real do site.
 
+Para o POST, precisamos ler exatamente Content-Length quantidade de bytes da entrada
+
 Codigos de status:
 200 OK - O arquivo foi enviado com sucesso
 400 Bad Request - O cliente enviou algo que seu parser nao entendeu
 403 Forbidden - O arquivo existe, mas o servidor nao tem permissao de leitura
 404 Not Found - A funcao fopen() retornou NULL (arquivo nao existe)
 500 Internal Error - O codigo deu algum erro logico ou falha de sistema
+
+HTTP/1.0 introduziu cabecalhos e codigos de status. A conexao fechava apos cada arquivo
+HTTP/1.1 introduziu o Keep-Alive (reutilizar a mesma conexao TCP para varios scripts) e o 
+header host (obrigatorio).
+HTTP/2 e HTTP3/ sao binarios e utilizam conceitos como multiplexacao e compressao de cabecalhos
+
+O comando GET do HTTP é historico e sinaliza apenas leitura do documento do servidor. Diferente de outros
+comandos como POST que é usado quando o cliente envia dados para serem processados, alterando o estado do 
+servidor. PUT/PATCH que é usado para substituir os atualizar arquivos existentes. Delete que 
+remove o recurso.
+
+Tratando das camadas OSI:
+-A camada 7 (aplicacao) é onde se encontra a semantica do HTTP. Decide se é um GET ou POST.
+
+-A camada 6 (apresentacao) lida com a sintaxe e a formatacao. A codificacao de caracteres (UTF-8 ou ASCII), 
+compressao: se decidir usar Gzip para diminuir o tamanho da resposta. Criptografia: se fosse implementar 
+HTTPS, o TLS estaria aqui.
+
+-A camada 5 (sessao): cuida do gerenciamento de fluxo. Aqui onde é mantido o diálogo entre
+servidor e cliente. É o ciclo de vida do socket. O ato de dar um accept() e manter o socket aberto para
+multiplas requisicoes (o keep-alive) é o gerenciamento da sessao. se o socket fecha, a sessao acaba
+
+-A camada 4 (transporte): a fronteira do kernel. Aqui se encontra o TCP, que não é implementado, mas é consumido
+via sistema operacional. Na syscall socket(AF_INET, SOCK_STREAM, 0), o sock_stream diz ao sistema 
+operacional cuidar do transporte usando TCP, que não deixa os dados serem despedaçados,
+garante que nao sao enviados dados mais rapido do que o cliente pode ler, e se um pacote sumir, o kernel 
+reenvia sem que percebamos.
