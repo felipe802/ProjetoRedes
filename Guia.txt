@@ -1,0 +1,18 @@
+socket() cria o endpoint de comunicacao
+bind() associa o socket a uma porta especifica
+listen() coloca o socket em modo de espera por conexoes
+accept() retira uma conexao da fila e cria um novo socket para essa conversa
+read()/write() troca de dados (onde entra o protocolo HTTP)
+close() encerra a conexao
+
+O HTTP é um protocolo de texto. Para o navegador entender que o servidor funciona, 
+precisamos enviar um cabeçalho e um corpo, separados por uma linha em branco (\r\n\r\n)
+Tudo no HTTP começa com o cliente (navegador) enviando uma requisição e o servidor (o código em C)
+devolvendo uma resposta.
+Quando der um read() no socket, veremos algo como:
+
+GET /index.html HTTP/1.1 
+Host: localhost:8080
+User-Agent: Mozilla/5.0
+Accept: text/html
+(Linha em branco)
