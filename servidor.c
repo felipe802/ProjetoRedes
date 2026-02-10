@@ -42,6 +42,9 @@ int main() {
     else printf("Novo socket criado: %d\n", novo_socket);
 
     close(novo_socket);
+    printf("Novo socket encerrado.\n");
     close(serv_file_desc);
+    printf("Primeiro socket encerrado.\n");
+    printf("Servidor encerrado com sucesso!\n");
     return(EXIT_SUCCESS);
 }
