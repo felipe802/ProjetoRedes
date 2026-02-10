@@ -16,3 +16,34 @@ Host: localhost:8080
 User-Agent: Mozilla/5.0
 Accept: text/html
 (Linha em branco)
+
+O método (verbo): GET (busca dados), POST (envia dados), DELETE.
+Caminho (path): /index.html é aqui que o código C decide qual arquivo abrir no disco. 
+Versão: HTTP/1.1 é o padrão mais simple para implementar manualmente.
+Headers: Chave-valor que dao o contexto (quem é o cliente, que tipo de arquivo ele aceita)
+Linha em branco: o delimitador crucial. O HTTP usa \r\n\r\n (CRLF duplo) para dizer: "acabaram
+os cabeçalhos, o que vier depois é o corpo(body)".
+
+A resposta (o que será enviado no write()) se dá pelo que ele entendeu da grande string recebida 
+anteriormente. Se a leitura não funcionar teremos um erro de conexao interormpida.
+Estando correto, veremos a resposta:
+
+HTTP/1.1 200 OK
+Content-Type: text/html
+Content-Lenght: 44
+Connection: close
+
+<html><body><h1>Sucesso!</h1></body></html>
+
+Status Line: versao + codigo de status (200 OK, 404 Not Found)
+Content-Type diz ao navegador se ele deve renderizar HTML, exibir uma imagem ou baixar um PDF
+Content-Lenght: o tamanho exato (em bytes) do corpo. Dica: usar strlen() no
+buffer do HTML para preencher isso.
+Corpo: conteudo real do site.
+
+Codigos de status:
+200 OK - O arquivo foi enviado com sucesso
+400 Bad Request - O cliente enviou algo que seu parser nao entendeu
+403 Forbidden - O arquivo existe, mas o servidor nao tem permissao de leitura
+404 Not Found - A funcao fopen() retornou NULL (arquivo nao existe)
+500 Internal Error - O codigo deu algum erro logico ou falha de sistema
