@@ -9,7 +9,26 @@ usadas nesse projeto. Os IPs são conceitos da camada 3 (rede). O Codigo (camada
 o socket (camada 5 sessao), que pede ao TCP (camada 4 transporte) para empacotar tudo, e o TCP coloca 
 a etiqueta de endereco IP (camada 3 rede).
 
+Protocol Stack: é o motor que processa os dados. Cada camada da pilha adiciona um header aos dados que 
+sao enviados. Quando os dados chegam, cada camada retira sua etiqueta e passa o que sobrou para a 
+camada de cima.
+
 Endianness: Em geral, os processadores sao Little-Endian (ou seja, guardam o byte menos significativo
 primeiro). Mas a rede, por padrao, é Big-Endian (o byte mais significativo primeiro).
 Por isso que usamos funções como htons(Host TO Network Short). Se nao usar isso, o servidor vai tentar
-ouvir a requisicao em uma porta completamente diferente porque os bytes estarao invertidos
+ouvir a requisicao em uma porta completamente diferente porque os bytes estarao invertidos.
+
+Seguindo a filosofia UNIX, tudo em Linux ou FreeBSD é um arquivo. Quando um socket é criado, o SO devolve
+um inteiro, que é o File Descriptor (FD), nao importando se o codigo esta sendo escrito no disco rigido, exibindo
+no terminal ou enviando um HTML para outro local. A função se assemelha a: write(fd, buffer, size).
+
+User/Kernel space: Toda vez que é chamada send() ou recv(), ocorre um Context Switch. O programa para, o kernel assume, faz o 
+trabalho pesado na placa de rede, e depois devolve o controle ao usuário. 
+
+Backlog: listen(server_fd, 5), 5 é o backlog, uma sala de espera para 5 pessoas por exemplo. Se 10 pessoas tentarem acessar
+o site ao mesmo tempo, mas o codigo ainda estiver processando a primeira, o Kernel guarda as outras na fila. Se a fila 
+encher, os novos usuários recebem "concexao recusada".
+
+Buffers: os dados nao fluem em tempo real byte a byte. O kernel enche um buffer (temporario) na memoria.
+Se o programa for lento para ler (read), o buffer enche. Se isso acontece, o TCP avisa o remetente para "parar de enviar
+por um momento" (isso é chamado de Flow Control).
