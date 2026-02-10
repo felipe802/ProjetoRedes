@@ -32,3 +32,17 @@ encher, os novos usuários recebem "concexao recusada".
 Buffers: os dados nao fluem em tempo real byte a byte. O kernel enche um buffer (temporario) na memoria.
 Se o programa for lento para ler (read), o buffer enche. Se isso acontece, o TCP avisa o remetente para "parar de enviar
 por um momento" (isso é chamado de Flow Control).
+
+Usando a funcao pthread_create da biblioteca POSIX Threads (<pthreads.h>) fazemos o fluxo multi-threading:
+1. A main chama accept().
+2. O accept() retorna um novo File Descriptor (client_fd).
+3. Uma thread é criada e passa o cliente_fd para ela.
+4. A thread executa a lógica de read/write de forma independente.
+5. O main volta imediatamente para o accept()
+
+Antigamente (e muito comum no FreeBSD classico, usava-se o Fork).
+Processos (fork): criam uma cópia identica do programa. É mais seguro (se um processo crashar, o outro continua), mas 
+consome muita memória porque duplica tudo.
+
+Threads: Compartilham o mesmo espaço de memoria. Sao muito leves e rapidas para criar, mas um erro (Segfault) em uma
+thread pode derrubar o servidor inteiro.
