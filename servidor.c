@@ -68,7 +68,6 @@ int main() {
     }
     else printf("Enviados com êxito: %d bytes.\n", bytes_enviados);
 
-
     close(novo_socket);
     printf("Novo socket encerrado.\n");
     close(serv_file_desc);
