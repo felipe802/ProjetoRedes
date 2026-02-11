@@ -11,16 +11,17 @@
 int main() {
     // 1. Criar socket e definir a estrutura dele.
     int serv_file_desc;
-    if ((serv_file_desc = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
+    if ((serv_file_desc = socket(AF_INET6, SOCK_STREAM, 0)) < 0) {
         perror("Erro ao criar socket");
         return (EXIT_FAILURE);
     }
     else printf("Socket criado: %d\n", serv_file_desc);
-    struct sockaddr_in ender_serv;
+
+    struct sockaddr_in6 ender_serv;
     memset(&ender_serv, 0, sizeof(ender_serv));
-    ender_serv.sin_family = AF_INET; // IPv4
-    ender_serv.sin_addr.s_addr = INADDR_ANY;
-    ender_serv.sin_port = htons(PORTA); // Inverter a sequência dos bytes
+    ender_serv.sin6_family = AF_INET6; // IPv6
+    ender_serv.sin6_addr = in6addr_any;
+    ender_serv.sin6_port = htons(PORTA); // Inverter a sequência dos bytes
     
     // 2. "Assigning a name to a socket". Bind->Listen->Accept
     if (bind(serv_file_desc, (struct sockaddr *)&ender_serv, sizeof(ender_serv)) < 0) {
@@ -31,10 +32,10 @@ int main() {
     else printf("Bind feito com sucesso!\n");
 
     listen(serv_file_desc, 3);
-    printf("Servidor iniciado. Aguardando conexão na porta 8080...\n");
+    printf("Servidor iniciado. Aguardando conexão na porta %d...\n", PORTA);
 
     struct sockaddr_in cliente;
-    socklen_t c = sizeof(struct sockaddr);
+    socklen_t c = sizeof(cliente);
     int novo_socket = accept(serv_file_desc, (struct sockaddr *)&cliente, &c);
     if (novo_socket < 0) {
         perror("Erro no accept");
@@ -58,8 +59,12 @@ int main() {
         printf("Recebidos com êxito: %d bytes.\n", bytes);
     }
     // O curl precisa de pelo menos o Status Line e uma linha vazia para montar a HTTP básica
-    char mensagem[] = "Ola, cliente! Mensagem recebida.";
-    int bytes_enviados = send(novo_socket, mensagem, sizeof(mensagem), 0);
+    char *mensagem = "HTTP/1.1 200 OK\r\n"
+                     "Content-Type: text/html\r\n"
+                     "Content-Length: 14\r\n"
+                     "\r\n"
+                     "Hello, world!\n";
+    int bytes_enviados = send(novo_socket, mensagem, strlen(mensagem), 0);
     if (bytes_enviados < 0) {
         perror("Erro ao enviar feedback");
         close(novo_socket);
