@@ -1,10 +1,11 @@
-#include <sys/types.h>
+#include <sys/types.h>  // Compatibilidade de tipos BSD, obrigatória
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <sys/socket.h> // Define a interface de sockets. Aqui estão as funções e a conexão feita na rede
-#include <netinet/in.h> // Define as estruturas de endereçamento da internet (IPv4/IPv6)
-#include <unistd.h> // Necessária para a função close()
+#include <sys/socket.h> // Interface de rede bruta
+#include <netinet/in.h> // Endereçamento IP
+#include <unistd.h>     // Interação com o kernel Unix
+#include "httpParser.h"
 
 #define PORTA 8080
 
@@ -19,7 +20,7 @@ int main() {
 
     struct sockaddr_in6 ender_serv;
     memset(&ender_serv, 0, sizeof(ender_serv));
-    ender_serv.sin6_family = AF_INET6; // IPv6
+    ender_serv.sin6_family = AF_INET6;   // IPv6
     ender_serv.sin6_addr = in6addr_any;
     ender_serv.sin6_port = htons(PORTA); // Inverter a sequência dos bytes
     
@@ -44,34 +45,8 @@ int main() {
         }
         else printf("Novo socket criado: %d\n", novo_socket);
 
-        // 3. Comunicação com o cliente
-        char buffer[2048] = {};
-        int bytes = recv(novo_socket, buffer, 1024, 0);
-        if (bytes < 0) {
-            perror("Erro na leitura do cliente");
-            close(novo_socket);
-            close(serv_file_desc);
-            return(EXIT_FAILURE);
-        }
-        else if (bytes == 0) printf("Cliente desconectou.\n");
-        else {
-            buffer[bytes] = '\0'; // Coloca fim na string
-            printf("Recebidos com êxito: %d bytes.\n", bytes);
-        }
-        // O curl precisa de pelo menos o Status Line e uma linha vazia para montar a HTTP básica
-        char *mensagem = "HTTP/1.1 200 OK\r\n"
-                        "Content-Type: text/html\r\n"
-                        "Content-Length: 14\r\n"
-                        "\r\n"
-                        "Hello, world!\n";
-        int bytes_enviados = send(novo_socket, mensagem, strlen(mensagem), 0);
-        if (bytes_enviados < 0) {
-            perror("Erro ao enviar feedback");
-            close(novo_socket);
-            close(serv_file_desc);
-            return(EXIT_FAILURE);
-        }
-        else printf("Enviados com êxito: %d bytes.\n", bytes_enviados);
+        processar_requisicao(novo_socket);
+
         close(novo_socket);
         printf("Novo socket encerrado.\n\n");
     }
