@@ -12,7 +12,7 @@ int main() {
     // 1. Criar socket e definir a estrutura dele.
     int serv_file_desc;
     if ((serv_file_desc = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
-        perror("Erro ao criar socket!\n");
+        perror("Erro ao criar socket");
         return (EXIT_FAILURE);
     }
     else printf("Socket criado: %d\n", serv_file_desc);
@@ -24,7 +24,8 @@ int main() {
     
     // 2. "Assigning a name to a socket". Bind->Listen->Accept
     if (bind(serv_file_desc, (struct sockaddr *)&ender_serv, sizeof(ender_serv)) < 0) {
-        perror("Erro no bind.\n");
+        perror("Erro no bind");
+        close(serv_file_desc);
         return(EXIT_FAILURE);
     }
     else printf("Bind feito com sucesso!\n");
@@ -36,10 +37,27 @@ int main() {
     socklen_t c = sizeof(struct sockaddr);
     int novo_socket = accept(serv_file_desc, (struct sockaddr *)&cliente, &c);
     if (novo_socket < 0) {
-        perror("Erro no accept.\n");
+        perror("Erro no accept");
+        close(serv_file_desc);
         return (EXIT_FAILURE);
     }
     else printf("Novo socket criado: %d\n", novo_socket);
+
+    // 3. Comunicação com o cliente
+    char buffer[1024] = {};
+    int bytes = recv(novo_socket, buffer, 1024, 0);
+    if (bytes < 0) {
+        perror("Erro na leitura do cliente");
+        close(novo_socket);
+        close(serv_file_desc);
+        return(EXIT_FAILURE);
+    }
+    else if (bytes == 0) printf("Cliente desconectou.\n");
+    else {
+        buffer[bytes] = '\0'; // Coloca fim na string
+        printf("Recebidos com êxito: %d bytes.\n", bytes);
+    }
+
 
     close(novo_socket);
     printf("Novo socket encerrado.\n");
