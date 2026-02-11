@@ -9,7 +9,7 @@ O HTTP é um protocolo de texto. Para o navegador entender que o servidor funcio
 precisamos enviar um cabeçalho e um corpo, separados por uma linha em branco (\r\n\r\n)
 Tudo no HTTP começa com o cliente (navegador) enviando uma requisição e o servidor (o código em C)
 devolvendo uma resposta.
-Quando der um read() no socket, veremos algo como:
+Quando der um read() ou recv() no socket, veremos algo como:
 
 GET /index.html HTTP/1.1 
 Host: localhost:8080

@@ -20,3 +20,10 @@ Para receber as mensagens do cliente, podemos usar basicamente duas funcoes: rea
 funciona com qualquer file descriptor (arquivos, pipes, sockets, etc), nao possuindo flags especiais. Já recv() funciona 
 apenas com sockets, tendo flags especiais como MSG_PEEK (espiar sem remover), MSG_WAITALL (esperar ate receber todos os bytes 
 solicitados), MSG_DONTWAIT (operacao nao-bloqueante).
+
+read() e write() ou recv() e send(), estes ultimos propriamente para sockets, com flags.
+
+Erro 56 Transport endpoint is not connected: a licação está sendo encerrada antes que sequer o cliente consiga
+enviar alguma mensagem, por isso o recv está la para receber o que o cliente falar.
+Erro no bind address already in use: o servidor anterior nao liberou a porta imediatamente. o SO mantem a porta por um tempo
+(TIME_WAIT). Esperar até 1 minuto. Para que seja liberado imediatamente usar a funcao setsockopt()

@@ -44,7 +44,7 @@ int main() {
     else printf("Novo socket criado: %d\n", novo_socket);
 
     // 3. Comunicação com o cliente
-    char buffer[1024] = {};
+    char buffer[2048] = {};
     int bytes = recv(novo_socket, buffer, 1024, 0);
     if (bytes < 0) {
         perror("Erro na leitura do cliente");
@@ -57,6 +57,16 @@ int main() {
         buffer[bytes] = '\0'; // Coloca fim na string
         printf("Recebidos com êxito: %d bytes.\n", bytes);
     }
+    // O curl precisa de pelo menos o Status Line e uma linha vazia para montar a HTTP básica
+    char mensagem[] = "Ola, cliente! Mensagem recebida.";
+    int bytes_enviados = send(novo_socket, mensagem, sizeof(mensagem), 0);
+    if (bytes_enviados < 0) {
+        perror("Erro ao enviar feedback");
+        close(novo_socket);
+        close(serv_file_desc);
+        return(EXIT_FAILURE);
+    }
+    else printf("Enviados com êxito: %d bytes.\n", bytes_enviados);
 
 
     close(novo_socket);
