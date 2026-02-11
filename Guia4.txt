@@ -14,3 +14,16 @@ a string padronizada injetada pelo curl no buffer da placa de rede segue rigidam
 <CHAVE2>: <VALOR2>\r\n
 \r\n                                  # (Carriage Return + Line Feed)
 <CORPO (opcional)>
+
+O POST eh usado para enviar dados ao servidor para que um novo recurso seja criado ou para que os dados sejam
+processados (como um formulario de login). os dados nao vao na url, mas sim no corpo da requisicao. quando 
+o httpparser identificar um post, precisa-se ler o cabecalho content-lenght para saber quantos bytes extras
+deve ser do socket apos o CRLF. se enviar o mesmo post 10x, podera criar 10 registros diferentes no servidor
+
+O PUT eh usado para atualizar um recurso existente ou cria-lo , caso ele nao exista, em um local especifico, ou 
+substituir caso ja exista. no FreeBSD, isso geralmente envolve abrir um arquivo com O_TRUNC (p apagar o conteudo
+antigo) e escrever o novo corpo da requisicao nele. nao importa se enviar o mesmo PUT 1 ou 100 vezes, o resultado
+final no servidor sera o mesmo arquivo com o mesmo conteudo
+
+diferente do put, o patch aplica modificacoes parciais a um recurso. se tem um arquivo de texto e quer mudar apenas 
+uma linha, seria enviado um patch com as instrucoes de mudanca
