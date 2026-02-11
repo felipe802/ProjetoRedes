@@ -6,7 +6,7 @@
 #include <netinet/in.h> // Define as estruturas de endereçamento da internet (IPv4/IPv6)
 #include <unistd.h> // Necessária para a função close()
 
-#define PORTA 8050
+#define PORTA 8080
 
 int main() {
     // 1. Criar socket e definir a estrutura dele.
