@@ -25,5 +25,9 @@ read() e write() ou recv() e send(), estes ultimos propriamente para sockets, co
 
 Erro 56 Transport endpoint is not connected: a licação está sendo encerrada antes que sequer o cliente consiga
 enviar alguma mensagem, por isso o recv está la para receber o que o cliente falar.
+
 Erro no bind address already in use: o servidor anterior nao liberou a porta imediatamente. o SO mantem a porta por um tempo
 (TIME_WAIT). Esperar até 1 minuto. Para que seja liberado imediatamente usar a funcao setsockopt()
+
+Erro curl 1 received http... not allowed: recebeu algo que nao esta no formato http 1.1, o http 0.9 é obsoleto 
+por isso recusado. a mensagem deve ser codificada da maneira adequada para http 1.1

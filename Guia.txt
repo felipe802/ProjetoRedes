@@ -53,6 +53,7 @@ Codigos de status:
 404 Not Found - A funcao fopen() retornou NULL (arquivo nao existe)
 500 Internal Error - O codigo deu algum erro logico ou falha de sistema
 
+HTTP/0.9 Obsoleto e inseguro
 HTTP/1.0 introduziu cabecalhos e codigos de status. A conexao fechava apos cada arquivo
 HTTP/1.1 introduziu o Keep-Alive (reutilizar a mesma conexao TCP para varios scripts) e o 
 header host (obrigatorio).
