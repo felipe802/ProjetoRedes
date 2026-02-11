@@ -1,0 +1,44 @@
+# Executáveis
+main
+servidor
+cliente
+*.out
+*.exe
+
+# Arquivos objeto
+*.o
+*.obj
+
+# Arquivos de compilação
+*.a
+*.so
+*.dylib
+
+# Arquivos de debug
+*.dSYM/
+*.su
+*.idb
+*.pdb
+
+# Core dumps
+core
+core.*
+
+# Arquivos do editor
+*.swp
+*.swo
+*~
+.vscode/
+.idea/
+*.sublime-*
+
+# Arquivos do sistema
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Arquivos temporários
+*.tmp
+*.temp
