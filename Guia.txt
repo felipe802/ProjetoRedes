@@ -33,7 +33,7 @@ Estando correto, veremos a resposta:
 
 HTTP/1.1 200 OK
 Content-Type: text/html
-Content-Lenght: 44
+Content-Length: 44
 Connection: close
 
 <html><body><h1>Sucesso!</h1></body></html>
