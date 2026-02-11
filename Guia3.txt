@@ -31,3 +31,25 @@ Erro no bind address already in use: o servidor anterior nao liberou a porta ime
 
 Erro curl 1 received http... not allowed: recebeu algo que nao esta no formato http 1.1, o http 0.9 é obsoleto 
 por isso recusado. a mensagem deve ser codificada da maneira adequada para http 1.1
+
+No instante que é executado o comando "curl localhost:8080", o processo do curl faz:
+1. Resolução: Ele traduz localhost para 127.0.0.1
+2. Socket: Ele cria o próprio socket dele (camada 5 sessao)
+3. Connect: ele executa a syscall connect(). Isso dispara o TCP Three-way handshake. enquando o servidor esta travado
+no accept(),  o connect() do curl acorda o accept(). assim que o handshake termina, o curl imediatamente chama a funcao
+send() no socket dele. entao ele escreve uma string padronizada no buffer de saida da placa de rede. no codigo, essa string 
+fica "parada" no buffer do kernel ate que é chamada a funcao recv()
+
+o que o curl envia? seguindo a especificacao HTTP, ele injeta no socket, antes do recv():
+GET / HTTP/1.1
+Host: localhost:8080
+User-Agent: curl/8.5.0
+Accept: */*
+
+um novo socket eh criado antes mesmo que o curl seja executado. basta colocar no navegador o endereco.
+1. o curl entrega os dados para o kernel do SO
+2. o kernel armazena isso em um receive buffer (area de memoria reservada para aquele socket especifico)
+3. os dados ficam ali ate que o processo chame recv()
+
+se recv() nunca for chamada, os dados expiram ou a conexao trava. o protocolo http de fato comeca quando 
+essa mensagem eh pega do buffer e comecar a tomar decisoes em cima disso.

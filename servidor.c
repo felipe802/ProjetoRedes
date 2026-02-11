@@ -40,8 +40,7 @@ int main() {
         int novo_socket = accept(serv_file_desc, (struct sockaddr *)&cliente, &c);
         if (novo_socket < 0) {
             perror("Erro no accept");
-            close(serv_file_desc);
-            return (EXIT_FAILURE);
+            continue; // Tenta a próxima conexão
         }
         else printf("Novo socket criado: %d\n", novo_socket);
 

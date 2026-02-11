@@ -1,0 +1,16 @@
+por que localhost vira 127.0.0.1? as placas de rede e os protocolos de transporte (TCP/IP) nao entendem
+nomes como "https://www.google.com/search?q=google.com" ou "localhost". eles so operam com enderecos 
+numericos. seguindo um dicionario local (cat /etc/hosts), localhost esta para 127.0.0.1.
+
+quando eh digitado curl localhost, eh chamada uma funcao da biblioteca padrao do c chamada getaddrinfo().
+esse funcao consulta o SO que olha primeiro nesse arquivo antes de ir para a internet (DNS)
+o ip 127.0.0.1 eh reservado mundialmente para a interface do loopback. eh um driver virtual que simula uma
+placa de rede dentro do proprio kernel. os dados enviados para ele nunca saem para o cabo fisico. eles 
+fazem a curva dentro da memoria RAM e voltam para o sistema
+
+a string padronizada injetada pelo curl no buffer da placa de rede segue rigidamente o protocolo HTTP/1.1:
+<METODO> <CAMINHO> <VERSAO>\r\n       # request line
+<CHAVE1>: <VALOR1>\r\n                  
+<CHAVE2>: <VALOR2>\r\n
+\r\n                                  # (Carriage Return + Line Feed)
+<CORPO (opcional)>
