@@ -27,3 +27,6 @@ final no servidor sera o mesmo arquivo com o mesmo conteudo
 
 diferente do put, o patch aplica modificacoes parciais a um recurso. se tem um arquivo de texto e quer mudar apenas 
 uma linha, seria enviado um patch com as instrucoes de mudanca
+
+GET serve para pedir dados. o corpo da mensagem eh quase sempre vazio
+POST/PUT servem para enviar dados

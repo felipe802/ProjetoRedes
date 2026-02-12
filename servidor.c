@@ -36,7 +36,7 @@ int main() {
     printf("Servidor iniciado. Aguardando conexão na porta %d...\n", PORTA);
 
     while (1) {
-        struct sockaddr_in cliente;
+        struct sockaddr_in6 cliente;
         socklen_t c = sizeof(cliente);
         int novo_socket = accept(serv_file_desc, (struct sockaddr *)&cliente, &c);
         if (novo_socket < 0) {
