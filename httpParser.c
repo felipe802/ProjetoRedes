@@ -53,7 +53,7 @@ void processar_requisicao(int novo_socket) {
 }
 
 
-void enviar_resposta_html(int socket_cliente, char *arquivo) {
+void enviar_arquivo_generico(int socket_cliente, char *arquivo) {
     FILE *f = fopen(arquivo, "rb"); // rb para Unix não corromper outros tipos
     if (f == NULL) {
         perror("Erro ao abrir arquivo");
