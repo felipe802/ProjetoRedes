@@ -7,7 +7,7 @@
 #include <unistd.h>     // Interação com o kernel Unix
 #include "httpParser.h"
 
-#define PORTA 8081
+#define PORTA 8080
 
 int main() {
     // 1. Criar socket e definir a estrutura dele.
@@ -33,7 +33,7 @@ int main() {
     else printf("Bind feito com sucesso!\n");
 
     listen(serv_file_desc, 3);
-    printf("Servidor iniciado. Aguardando conexão na porta %d...\n", PORTA);
+    printf("Servidor iniciado. Aguardando conexão na porta %d...\n\n", PORTA);
 
     while (1) {
         struct sockaddr_in6 cliente;

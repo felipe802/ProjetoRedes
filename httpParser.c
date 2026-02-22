@@ -21,7 +21,11 @@ void processar_requisicao(int novo_socket) {
         close(novo_socket);
         return;
     }
-    else if (bytes_recebidos == 0) printf("Cliente desconectou.\n");
+    else if (bytes_recebidos == 0) {
+        printf("Cliente desconectou.\n");
+        close(novo_socket); // Garantir que fechou 
+        return;
+    }
     else {
         buffer[bytes_recebidos] = '\0'; // Coloca fim na string
         printf("Recebidos com êxito: %d bytes.\n", bytes_recebidos);
@@ -38,6 +42,7 @@ void processar_requisicao(int novo_socket) {
 
     if (strcmp(metodo, "GET") == 0) {
         char arquivo_alvo[256];
+        memset(arquivo_alvo, 0, sizeof(arquivo_alvo));
         if (strcmp(caminho, "/") == 0) { // Index.html por padrão 
             strcpy(arquivo_alvo, "index.html");
         }
@@ -58,6 +63,7 @@ void processar_requisicao(int novo_socket) {
 
         // 2. montando a resposta HTTP para o cliente nao ficar travado
         char resposta[512];
+        memset(resposta, 0, sizeof(resposta));
         char *mensagem_retorno = "{\"status\": \"sucesso\", \"mensagem\": \"POST recebido pelo servidor C!\"}";
 
         snprintf(resposta, sizeof(resposta),
@@ -95,6 +101,7 @@ void enviar_arquivo_generico(int socket_cliente, char *arquivo) {
     fread(conteudo, 1, tamanho, f); // Escreve o que tem em f no conteudo
 
     char cabecalho[512]; // Montar o cabecalho HTTP dinamicamente
+    memset(cabecalho, 0, sizeof(cabecalho));
     // Esta função formata a string do cabeçalho + corpo da resposta
     // Escreve no buffer com segurança do tamanho
     snprintf(cabecalho, sizeof(cabecalho),

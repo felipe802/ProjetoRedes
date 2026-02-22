@@ -1,0 +1,26 @@
+recv(socket, buffer, tamanho, flags) fica escutando o socket. quando o navegador envia a resquisicao
+http, o recv pega esses bytes da rede e copia para a sua variavel buffer na memoria RAM
+
+sscanf(buffer, "%9s %255s %19s", metodo, caminho, versao) eh um scanner de strings. ele olha para a 
+primeira linha do buffer (ex: POST /api/dados HTTP/1.1) e quebra ela pelos espaços, guardando as 
+palavras nas variaveis correspondentes. evita ficar fazendo loops manuais pra separar.
+
+strstr(string_maior, string_menor) varre o buffer e devolve um ponteiro exatamente para onde esse 
+divisor comeca. assim que achamos os dados do post.
+
+snprintf(destino, tamanho_maximo, formato, variaveis...) igual ao printf mas em vez de jogar o texto 
+no terminal, ele imprime dentro de uma variavel string. o 'n' protege o servidor de ataques de buffer
+overflow.
+
+send(socket, mensagem, tamanho, flags) o inverso do recv. pega a string montada e empurra para a placa
+de rede, mandando de volta para o navegador do usuario.
+
+GET: o cliente pede um arquivo. o servidor retorna o status 200 OK + o conteudo do arquivo (html, imagem,
+etc).
+POST: o cliente envia dados. o servidor recebe, processa e retorna o status 200 OK + uma mensagem de 
+confirmacao (como o exemplo testPOST.html). se o servidor nao enviar esse 200 OK de volta, o navegador
+do usuario fica travado carregando para sempre.
+Assim que funciona o protocolo HTTP, toda requisicao exige uma resposta do servidor.
+
+Quando o recv() retorna 0, significa que o cliente (navegador) fechou a conexao antes de enviar a mensagem.
+O codigo devve encerrar a funcao quando o cliente for desconectado. 
