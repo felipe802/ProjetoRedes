@@ -9,10 +9,10 @@ placa de rede dentro do proprio kernel. os dados enviados para ele nunca saem pa
 fazem a curva dentro da memoria RAM e voltam para o sistema
 
 a string padronizada injetada pelo curl no buffer da placa de rede segue rigidamente o protocolo HTTP/1.1:
-<METODO> <CAMINHO> <VERSAO>\r\n       # request line
+<METODO> <CAMINHO> <VERSAO>\r\n     # request line
 <CHAVE1>: <VALOR1>\r\n                  
 <CHAVE2>: <VALOR2>\r\n
-\r\n                                  # (Carriage Return + Line Feed)
+\r\n                           # (Carriage Return + Line Feed)
 <CORPO (opcional)>
 
 O POST eh usado para enviar dados ao servidor para que um novo recurso seja criado ou para que os dados sejam
@@ -30,3 +30,10 @@ uma linha, seria enviado um patch com as instrucoes de mudanca
 
 GET serve para pedir dados. o corpo da mensagem eh quase sempre vazio
 POST/PUT servem para enviar dados
+
+O POST existe em dois lugares diferentes:
+1. no front-end (index.html) eh onde o post nasce. precisa-se de um gatilho no html para empacotar os dados e 
+envia-los para o servidor.
+2. no back-end eh onde o post eh recebido e processado. O C lê a requisição, extrai os dados que o index.html enviou
+e devolve uma resposta
+

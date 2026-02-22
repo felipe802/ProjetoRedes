@@ -10,6 +10,7 @@
 void processar_requisicao(int novo_socket) {
     // Recebendo algo como:
     // GET /index.html HTTP/1.1\r\nHost: localhost\r\n\r\n ...
+    // O que vier depois do cabeçalho é o corpo, útil para o POST
     char metodo[10], caminho[256], versao[20];
     char buffer[2048] = {};
     memset(buffer, 0, sizeof(buffer));
@@ -46,8 +47,32 @@ void processar_requisicao(int novo_socket) {
         enviar_arquivo_generico(novo_socket, arquivo_alvo);
     }
     else if (strcmp(metodo, "POST") == 0) {
-        // Lógica para salvar dados...
         printf("Recebi um POST para o caminho %s\n", caminho);
+        // Verifica se realmente chegou algum dado no corpo da requisicao
+        if (corpo != NULL && strlen(corpo) > 0) {
+            printf("Dados recebidos do cliente: %s\n", corpo);
+        }
+        else {
+            printf("POST recebido, mas o corpo estava vazio.\n");
+        }
+
+        // 2. montando a resposta HTTP para o cliente nao ficar travado
+        char resposta[512];
+        char *mensagem_retorno = "{\"status\": \"sucesso\", \"mensagem\: \"POST recebido pelo servidor C!\"}";
+
+        snprintf(resposta, sizeof(resposta),
+            "HTTP/1.1 200 OK\r\n"
+            "Content-Type: application/json\r\n"    // Devolvendo um JSON
+            "Content-Length: %lu\r\n",
+            "Connection: close\r\n"                 // Avisa que vamos fechar a conexão
+            "\r\n"
+            "%s",                                   // O corpo da resposta entra aqui
+            strlen(mensagem_retorno), mensagem_retorno);
+
+        // Enviando a resposta de volta pelo socket
+        int bytes_enviados = send(novo_socket, resposta, strlen(resposta), 0);
+        if (bytes_enviados < 0) perror("Erro ao enviar resposta do POST");
+        else printf("Resposta do POST enviada com sucesso.\n");
     }
 
 }
@@ -70,6 +95,7 @@ void enviar_arquivo_generico(int socket_cliente, char *arquivo) {
     fread(conteudo, 1, tamanho, f); // Escreve o que tem em f no conteudo
 
     char cabecalho[512]; // Montar o cabecalho HTTP dinamicamente
+    // Esta função formata a string do cabeçalho + corpo da resposta
     // Escreve no buffer com segurança do tamanho
     snprintf(cabecalho, sizeof(cabecalho),
         "HTTP/1.1 200 OK\r\n"
