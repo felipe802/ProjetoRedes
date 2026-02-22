@@ -14,3 +14,10 @@ overflow.
 
 send(socket, mensagem, tamanho, flags) o inverso do recv. pega a string montada e empurra para a placa
 de rede, mandando de volta para o navegador do usuario.
+
+GET: o cliente pede um arquivo. o servidor retorna o status 200 OK + o conteudo do arquivo (html, imagem,
+etc).
+POST: o cliente envia dados. o servidor recebe, processa e retorna o status 200 OK + uma mensagem de 
+confirmacao (como o exemplo testPOST.html). se o servidor nao enviar esse 200 OK de volta, o navegador
+do usuario fica travado carregando para sempre.
+Assim que funciona o protocolo HTTP, toda requisicao exige uma resposta do servidor.

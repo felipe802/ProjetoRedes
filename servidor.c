@@ -7,7 +7,7 @@
 #include <unistd.h>     // Interação com o kernel Unix
 #include "httpParser.h"
 
-#define PORTA 8080
+#define PORTA 8081
 
 int main() {
     // 1. Criar socket e definir a estrutura dele.

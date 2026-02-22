@@ -42,7 +42,7 @@ void processar_requisicao(int novo_socket) {
             strcpy(arquivo_alvo, "index.html");
         }
         else {
-            printf("Em manutenção, em breve conseguiremos abrir esse tipo de arquivo\n");
+            strcpy(arquivo_alvo, caminho + 1); // O "+1" pula a barra inicial
         }
         enviar_arquivo_generico(novo_socket, arquivo_alvo);
     }
@@ -58,12 +58,12 @@ void processar_requisicao(int novo_socket) {
 
         // 2. montando a resposta HTTP para o cliente nao ficar travado
         char resposta[512];
-        char *mensagem_retorno = "{\"status\": \"sucesso\", \"mensagem\: \"POST recebido pelo servidor C!\"}";
+        char *mensagem_retorno = "{\"status\": \"sucesso\", \"mensagem\": \"POST recebido pelo servidor C!\"}";
 
         snprintf(resposta, sizeof(resposta),
             "HTTP/1.1 200 OK\r\n"
             "Content-Type: application/json\r\n"    // Devolvendo um JSON
-            "Content-Length: %lu\r\n",
+            "Content-Length: %lu\r\n"
             "Connection: close\r\n"                 // Avisa que vamos fechar a conexão
             "\r\n"
             "%s",                                   // O corpo da resposta entra aqui
